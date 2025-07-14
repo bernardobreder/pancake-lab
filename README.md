@@ -86,7 +86,7 @@ The `add` methods, such as `addDarkChocolatePancake`, throw non-specific excepti
 
 ### Dependency Injection
 
-The service would benefit from an approach based on dependency injection, receiving `storage` and `logger` through the constructor. This would facilitate isolation for testing and improve separation of responsibilities.
+The service would benefit from an approach based on dependency injection, receiving `logger` through the constructor. This would facilitate isolation for testing and improve separation of responsibilities.
 
 ### Logging Redundancy
 
