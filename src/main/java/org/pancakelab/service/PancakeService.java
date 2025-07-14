@@ -21,6 +21,9 @@ import org.pancakelab.model.pancakes.MilkChocolatePancake;
 import org.pancakelab.model.pancakes.PancakeIngredient;
 import org.pancakelab.model.pancakes.PancakeRecipe;
 
+/**
+ * Pancake order service class
+ */
 public class PancakeService {
 
 	private final OrderLog log;
@@ -32,12 +35,24 @@ public class PancakeService {
 		this.log = log;
 	}
 
+	/**
+	 * Creates an order
+	 *
+	 * @param building
+	 * @param room
+	 * @return
+	 */
 	public OrderDTO createOrder(int building, int room) {
 		var data = new Order(building, room);
 		entities.put(data.getId(), new PancakeServiceEntry(data.getId(), data));
 		return OrderDTO.fromData(data);
 	}
 
+	/**
+	 * Creates a custom order
+	 *
+	 * @param orderId
+	 */
 	public void createCustom(UUID orderId) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -48,6 +63,12 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Adds an ingredient
+	 *
+	 * @param orderId
+	 * @param ingredient
+	 */
 	public void addIngredient(UUID orderId, PancakeIngredient ingredient) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -58,6 +79,11 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Finalizes the custom order
+	 *
+	 * @param orderId
+	 */
 	public void finishCustom(UUID orderId) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -115,6 +141,12 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Returns the order description
+	 *
+	 * @param orderId
+	 * @return
+	 */
 	public List<String> viewOrder(UUID orderId) {
 		var entry = entryOrNull(orderId);
 		if (entry == null) {
@@ -125,6 +157,13 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Removes an item from the order
+	 *
+	 * @param description
+	 * @param orderId
+	 * @param count
+	 */
 	public void removePancakes(String description, UUID orderId, int count) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -139,6 +178,11 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Cancels the order
+	 *
+	 * @param orderId
+	 */
 	public void cancelOrder(UUID orderId) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -152,18 +196,33 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Marks the order as completed
+	 *
+	 * @param orderId
+	 */
 	public void completeOrder(UUID orderId) {
 		synchronized (completedOrders) {
 			completedOrders.add(orderId);
 		}
 	}
 
+	/**
+	 * Returns the list of completed orders
+	 *
+	 * @return
+	 */
 	public Set<UUID> listCompletedOrders() {
 		synchronized (completedOrders) {
 			return new HashSet<>(completedOrders);
 		}
 	}
 
+	/**
+	 * Marks the order as being prepared
+	 *
+	 * @param orderId
+	 */
 	public void prepareOrder(UUID orderId) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -177,12 +236,23 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Returns the list of orders being prepared
+	 *
+	 * @return
+	 */
 	public Set<UUID> listPreparedOrders() {
 		synchronized (completedOrders) {
 			return new HashSet<>(preparedOrders);
 		}
 	}
 
+	/**
+	 * Requests the order delivery
+	 *
+	 * @param orderId
+	 * @return
+	 */
 	public DeliverOrder deliverOrder(UUID orderId) {
 		var entry = entryOrThrow(orderId);
 		synchronized (entry) {
@@ -204,27 +274,48 @@ public class PancakeService {
 		}
 	}
 
+	/**
+	 * Looks up the order entity or throws an error if not found
+	 *
+	 * @param orderId
+	 * @return
+	 */
 	private PancakeServiceEntry entryOrThrow(UUID orderId) {
-		return Optional.ofNullable(entryOrNull(orderId)) //
-				.orElseThrow(() -> new IllegalStateException(String.format("order %s not found", orderId)));
+		return Optional.ofNullable(entryOrNull(orderId)).orElseThrow(() -> new IllegalStateException(String.format("order %s not found", orderId)));
 	}
 
+	/**
+	 * Looks up the order entity or returns null
+	 *
+	 * @param orderId
+	 * @return
+	 */
 	private PancakeServiceEntry entryOrNull(UUID orderId) {
 		return orderId == null ? null : entities.get(orderId);
 	}
 
+	/**
+	 * Adds an item
+	 *
+	 * @param pancake
+	 * @param entry
+	 */
 	private void addPancake(PancakeRecipe pancake, PancakeServiceEntry entry) {
 		pancake.setOrderId(entry.id);
 		entry.recipes.add(pancake);
-
 		log.logAddPancake(entry.order, pancake.description(), entry.recipes);
 	}
 
+	/**
+	 * Return type for the delivered order
+	 */
 	public record DeliverOrder(OrderDTO order, List<String> pancakesToDeliver) {
 	};
 
+	/**
+	 * Order entry class
+	 */
 	private static class PancakeServiceEntry {
-
 		public final UUID id;
 		public final Order order;
 		public final List<PancakeRecipe> recipes = Collections.synchronizedList(new ArrayList<>());
@@ -234,7 +325,5 @@ public class PancakeService {
 			this.id = id;
 			this.order = order;
 		}
-
 	}
-
 }
