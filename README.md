@@ -130,7 +130,7 @@ Therefore, the best proposal will depend on the service usage context. For this 
 
 Instead of applying `synchronized` to the method (on `this`), I will use `synchronized` on the `PancakeServiceEntry` instance. This will allow concurrency when the `UUID` is different, but will ensure exclusive execution when it is the same. This approach ensures atomicity for the same `UUID` and allows concurrency when they are different, with fields protected by `thread-safe` structures such as `ConcurrentHashMap` and `mutex` of `completedOrders`.
 
-The `PancakeServiceEntry.custom` field does not need to be declared as `volatile` because it will be accessed within a `synchronized` block, at which time the `thread-memory` is synchronized with the `global-heap`. Considering that the service can come from a web server and reference the `PancakeServiceEntry` object in different threads, it is important that the field is stored in the global heap. The `recipes` field is already a `thread-safe` list, dispensing with this special attention.
+The `PancakeServiceEntry.custom` field does not need to be declared as `volatile` because it will be accessed within a `synchronized` block, at which time the `thread-memory` is synchronized with the `global-heap`. Considering that the service can come from a web server and reference the `PancakeServiceEntry` object in different threads. The `recipes` field is already a `thread-safe` list, dispensing with this special attention.
 
 ## Building recipes via API
 
