@@ -18,19 +18,18 @@ This redundancy represents a flaw in the architecture design, which could be sol
 
 ### UUID
 
-Using UUID as an identifier in a server presents important advantages and disadvantages:
+Using `UUID` as an identifier in a server presents important advantages and disadvantages:
 
 Advantages:
 
-- Generation of globally unique identifiers without the need for central coordination
+- Generation of `globally unique identifiers` without the need for central coordination
 - Ideal for distributed systems where multiple servers can create records simultaneously
-- Offers timeless and consistent identifiers for exposure to clients
+- Offers `timeless and consistent identifiers` for exposure to clients
 
 Disadvantages:
 
 - Can cause greater fragmentation in the database when compared to sequential IDs
-- Doesn't have natural temporal ordering, making it difficult for queries based on creation sequence
-- Occupies more storage space (16 bytes vs. 4-8 bytes of an integer)
+- Doesn't have `natural temporal ordering`, making it difficult for queries based on creation sequence
 
 ### Absence of basic methods
 
@@ -144,7 +143,7 @@ The `Order` and `OrderDTO` classes are very similar, but the role of the `dto` i
 
 ## TDD
 
-The TDD proposal is to build code based on tests, from the beginning of the class to its complete construction, creating tests for each stage of the process. Thus, for each stage of component construction, first the test is built, it is left red (broken) and then the necessary code is implemented to make it pass, also ensuring the functioning of the other tests already created.
+The `TDD` proposal is to build code based on tests, from the beginning of the class to its complete construction, creating tests for each stage of the process. Thus, for each stage of component construction, first the test is built, it is left red (broken test) and then the necessary code is implemented to make it pass (success test), also ensuring the functioning of the other tests already created.
 
 ## UML
 
@@ -152,7 +151,7 @@ The TDD proposal is to build code based on tests, from the beginning of the clas
 
 ## Validation
 
-For service methods, the first step is to validate the input parameters. For example, a crucial parameter to be validated is the Order, verifying the existence of the `PancakeServiceEntry`.
+For service methods, the first step is to validate the input parameters. For example, a crucial parameter to be validated is the `Order`, verifying the existence of the `PancakeServiceEntry`.
 
 # Problem
 
