@@ -148,6 +148,8 @@ The TDD proposal is to build code based on tests, from the beginning of the clas
 
 ## UML
 
+![Diagrama UML](uml.png)
+
 ## Validation
 
 For service methods, the first step is to validate the input parameters. For example, a crucial parameter to be validated is the Order, verifying the existence of the `PancakeServiceEntry`.
