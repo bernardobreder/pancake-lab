@@ -64,7 +64,7 @@ The `PancakeService` class presents several opportunities for improvement in its
 
 One of the main observations is the need to separate the responsibility of data storage from business logic. Creating a dedicated `PancakeStorage` class would allow the `PancakeService` to focus exclusively on business rules, following the Single Responsibility Principle (SRP).
 
-### Concurrency and Thread Safety
+### Concurrency and Thread Safe
 
 The current implementation is not `thread-safe`. All fields and methods lack mechanisms that ensure safe execution in a concurrent environment. Considering that order systems typically receive multiple simultaneous requests, this is a critical improvement.
 
@@ -124,7 +124,7 @@ The first improvement proposal is to add `synchronized` to all external service 
 
 The second proposal is to use the `ReadWriteLock` interface to protect critical regions of write and read operations. Its advantage is to privilege concurrent read operations while making write operations exclusive. For services with many reads and few writes, this solution is appropriate. Outside of this context, performance can be compromised, as this structure is heavier than `synchronized`.
 
-The third proposal is to use a `mutex` to protect the state of `completedOrders` and `preparedOrders`, and the `ConcurrentHashMap` for the `entities` field. This approach ensures `thread-safety` with superior performance to the other proposals. The negative point is the non-atomicity of operations. Still, the service remains `thread-safe` by being protected against concurrent access, maintaining coherence in internal fields.
+The third proposal is to use a `mutex` to protect the state of `completedOrders` and `preparedOrders`, and the `ConcurrentHashMap` for the `entities` field. This approach ensures `thread-safe` with superior performance to the other proposals. The negative point is the non-atomicity of operations. Still, the service remains `thread-safe` by being protected against concurrent access, maintaining coherence in internal fields.
 
 Therefore, the best proposal will depend on the service usage context. For this didactic example, the ideal solution would be to combine the first and third proposals.
 
