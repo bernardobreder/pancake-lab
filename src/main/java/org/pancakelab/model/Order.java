@@ -4,38 +4,46 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Order {
-    private final UUID id;
-    private final int building;
-    private final int room;
 
-    public Order(int building, int room) {
-        this.id = UUID.randomUUID();
-        this.building = building;
-        this.room = room;
-    }
+	private final UUID id;
+	private final int building;
+	private final int room;
 
-    public UUID getId() {
-        return id;
-    }
+	public Order(int building, int room) {
+		this(UUID.randomUUID(), building, room);
+	}
 
-    public int getBuilding() {
-        return building;
-    }
+	public Order(UUID id, int building, int room) {
+		this.id = id;
+		this.building = building;
+		this.room = room;
+	}
 
-    public int getRoom() {
-        return room;
-    }
+	public UUID getId() {
+		return id;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
-    }
+	public int getBuilding() {
+		return building;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+	public int getRoom() {
+		return room;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Order order = (Order) o;
+		return Objects.equals(id, order.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
+	}
+
 }

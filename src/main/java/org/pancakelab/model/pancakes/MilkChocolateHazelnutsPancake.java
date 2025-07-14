@@ -1,23 +1,12 @@
 package org.pancakelab.model.pancakes;
 
 import java.util.List;
-import java.util.UUID;
 
-public class MilkChocolateHazelnutsPancake extends MilkChocolatePancake {
-    private UUID orderId;
+public class MilkChocolateHazelnutsPancake extends AbstractPancake {
 
-    @Override
-    public UUID getOrderId() {
-        return orderId;
-    }
+	@Override
+	public List<String> ingredients() {
+		return List.of("milk chocolate", "hazelnuts");
+	}
 
-    @Override
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    @Override
-    public List<String> ingredients() {
-        return List.of("milk chocolate", "hazelnuts");
-    }
 }

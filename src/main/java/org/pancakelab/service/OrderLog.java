@@ -1,38 +1,38 @@
 package org.pancakelab.service;
 
+import java.util.List;
+
 import org.pancakelab.model.Order;
 import org.pancakelab.model.pancakes.PancakeRecipe;
 
-import java.util.List;
-
 public class OrderLog {
-    private static final StringBuilder log = new StringBuilder();
 
-    public static void logAddPancake(Order order, String description, List<PancakeRecipe> pancakes) {
-        long pancakesInOrder = pancakes.stream().filter(p -> p.getOrderId().equals(order.getId())).count();
+	private final StringBuilder log = new StringBuilder();
 
-        log.append("Added pancake with description '%s' ".formatted(description))
-           .append("to order %s containing %d pancakes, ".formatted(order.getId(), pancakesInOrder))
-           .append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom()));
-    }
+	public synchronized void logAddPancake(Order order, String description, List<PancakeRecipe> pancakes) {
+		log.append("Added pancake with description '%s' ".formatted(description)) //
+				.append("to order %s containing %d pancakes, ".formatted(order.getId(), pancakes.size())) //
+				.append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom())) //
+				.append("\n");
+	}
 
-    public static void logRemovePancakes(Order order, String description, int count, List<PancakeRecipe> pancakes) {
-        long pancakesInOrder = pancakes.stream().filter(p -> p.getOrderId().equals(order.getId())).count();
+	public synchronized void logRemovePancakes(Order order, String description, int count, List<PancakeRecipe> pancakes) {
+		log.append("Removed %d pancake(s) with description '%s' ".formatted(count, description)) //
+				.append("from order %s now containing %d pancakes, ".formatted(order.getId(), pancakes.size())) //
+				.append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom())) //
+				.append("\n");
+	}
 
-        log.append("Removed %d pancake(s) with description '%s' ".formatted(count, description))
-           .append("from order %s now containing %d pancakes, ".formatted(order.getId(), pancakesInOrder))
-           .append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom()));
-    }
+	public synchronized void logCancelOrder(Order order, List<PancakeRecipe> pancakes) {
+		log.append("Cancelled order %s with %d pancakes ".formatted(order.getId(), pancakes.size())) //
+				.append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom())) //
+				.append("\n");
+	}
 
-    public static void logCancelOrder(Order order, List<PancakeRecipe> pancakes) {
-        long pancakesInOrder = pancakes.stream().filter(p -> p.getOrderId().equals(order.getId())).count();
-        log.append("Cancelled order %s with %d pancakes ".formatted(order.getId(), pancakesInOrder))
-           .append("for building %d, room %d.".formatted(order.getBuilding(), order.getRoom()));
-    }
+	public synchronized void logDeliverOrder(Order order, List<PancakeRecipe> pancakes) {
+		log.append("Order %s with %d pancakes ".formatted(order.getId(), pancakes.size())) //
+				.append("for building %d, room %d out for delivery.".formatted(order.getBuilding(), order.getRoom())) //
+				.append("\n");
+	}
 
-    public static void logDeliverOrder(Order order, List<PancakeRecipe> pancakes) {
-        long pancakesInOrder = pancakes.stream().filter(p -> p.getOrderId().equals(order.getId())).count();
-        log.append("Order %s with %d pancakes ".formatted(order.getId(), pancakesInOrder))
-           .append("for building %d, room %d out for delivery.".formatted(order.getBuilding(), order.getRoom()));
-    }
 }

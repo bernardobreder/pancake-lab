@@ -1,28 +1,39 @@
 package org.pancakelab.service;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.pancakelab.model.Order;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.pancakelab.model.OrderDTO;
+import org.pancakelab.service.PancakeService.DeliverOrder;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PancakeServiceTest {
-	
-	private PancakeService pancakeService = new PancakeService();
-	
-	private Order order = null;
+
+	private OrderLog log;
+	private PancakeService pancakeService;
+
+	private OrderDTO order = null;
 
 	private final static String DARK_CHOCOLATE_PANCAKE_DESCRIPTION = "Delicious pancake with dark chocolate!";
 	private final static String MILK_CHOCOLATE_PANCAKE_DESCRIPTION = "Delicious pancake with milk chocolate!";
 	private final static String MILK_CHOCOLATE_HAZELNUTS_PANCAKE_DESCRIPTION = "Delicious pancake with milk chocolate, hazelnuts!";
+
+	@BeforeAll
+	public void beforeTest() {
+		log = new OrderLog();
+		pancakeService = new PancakeService(log);
+	}
 
 	@Test
 	@org.junit.jupiter.api.Order(10)
@@ -124,7 +135,7 @@ public class PancakeServiceTest {
 		List<String> pancakesToDeliver = pancakeService.viewOrder(order.getId());
 
 		// exercise
-		Object[] deliveredOrder = pancakeService.deliverOrder(order.getId());
+		DeliverOrder deliveredOrder = pancakeService.deliverOrder(order.getId());
 
 		// verify
 		Set<UUID> completedOrders = pancakeService.listCompletedOrders();
@@ -136,8 +147,8 @@ public class PancakeServiceTest {
 		List<String> ordersPancakes = pancakeService.viewOrder(order.getId());
 
 		assertEquals(List.of(), ordersPancakes);
-		assertEquals(order.getId(), ((Order) deliveredOrder[0]).getId());
-		assertEquals(pancakesToDeliver, (List<String>) deliveredOrder[1]);
+		assertEquals(order.getId(), deliveredOrder.order().getId());
+		assertEquals(pancakesToDeliver, deliveredOrder.pancakesToDeliver());
 
 		// tear down
 		order = null;
